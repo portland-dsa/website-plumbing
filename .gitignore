@@ -1,0 +1,4 @@
+.vagrant
+puppet/environments/production/modules/wordpress/files/kraft-lite.zip
+/*.zip
+/enfold*
