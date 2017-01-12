@@ -1,5 +1,5 @@
-class custom_user (
-  Optional[String] $username = undef,
+define custom_user (
+  Optional[String] $username = $title,
   Optional[String] $dotfiles_source = undef,
   Optional[String] $ssh_key = undef,
 )
@@ -63,14 +63,5 @@ class custom_user (
     }
   }
 
-  ## Packages
-  ## ========
-
-  package { 'zsh':
-    ensure => installed,
-  }
-
-  package { 'git':
-    ensure => installed,
-  }
+  ensure_packages(['zsh', 'git'])
 }
