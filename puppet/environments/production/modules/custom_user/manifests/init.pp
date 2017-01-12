@@ -1,13 +1,21 @@
 define custom_user (
-  Optional[String] $username = $title,
+  String $username = $title,
+  Boolean $admin = false,
   Optional[String] $dotfiles_source = undef,
   Optional[String] $ssh_key = undef,
 )
 
 {
+  if $admin {
+    $groups = "admin"
+  } else {
+    $groups = []
+  }
+
   user { $username:
     ensure => present,
     home => "/home/$username",
+    groups => $groups,
     shell => '/usr/bin/zsh',
     require => Package['zsh'],
   }
