@@ -10,4 +10,9 @@ node default {
   custom_user { 'joel':
     ssh_key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEArKzPEM79bH1Tr2deG6ypbhHP91RkABtYW5Iea6G+8GCL7ZpdSuDI0CwZuzNa/LVZGITI2y0xmf8meuFWkKZAG7LSMtygIrCL7as1Gy/wDfzK2xbBYQHRwI/Lsfutl2l3wYnGGiI7gLFpvTl27q7ro2cvIPiVVvPGts7HGjrWRaCCG6AUH+iNEs9B4wPY9W9vn+sn4IUh4W/is4f5i5oJxhoN+cZSSaAENXAFJYMx9v/HzSPXQWmfyzAxoBFQ60+jUE9up8FcOrmwLRGuzGkGO4Sr3JKkCGw1w3xM4/JweIwal22mylMV1zwiTm+CAq+S0q4bRBhLrElmxXdlfpf+yQ==',
   }
+
+  nginx_static { 'dsa-static':
+    serve_dir => "/var/www/dsa",
+    domain => 'pdxdsa.org',
+  }
 }

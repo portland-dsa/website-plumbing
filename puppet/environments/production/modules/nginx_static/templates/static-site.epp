@@ -1,0 +1,10 @@
+server {
+  listen 80;
+  listen [::]:80 ipv6only=on;
+  server_name <%= $server_name %>;
+  root <%= $web_root %>;
+
+  location / {
+    index index.html index.htm;
+  }
+}
