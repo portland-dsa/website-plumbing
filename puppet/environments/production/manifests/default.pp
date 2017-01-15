@@ -12,7 +12,7 @@ node default {
   }
 
   nginx_static { 'dsa-static':
-    serve_dir => "/var/www/dsa",
-    domain => 'pdxdsa.org',
+    serve_dir => "/var/www/html/dsa",
+    domain => 'portlanddsa.org',
   }
 }
