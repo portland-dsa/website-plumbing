@@ -1,8 +1,9 @@
 define custom_user (
   String $username = $title,
   Boolean $admin = false,
-  Optional[String] $dotfiles_source = undef,
   Optional[String] $ssh_key = undef,
+  Optional[String] $shell = undef,
+  Optional[String] $dotfiles_source = undef,
 )
 
 {
@@ -12,11 +13,17 @@ define custom_user (
     $groups = []
   }
 
+  if $shell {
+    $_shell = $shell
+  } else {
+    $_shell = "/usr/bin/zsh"
+  }
+
   user { $username:
     ensure => present,
     home => "/home/$username",
     groups => $groups,
-    shell => '/usr/bin/zsh',
+    shell => $_shell,
     require => Package['zsh'],
   }
 
