@@ -1,0 +1,26 @@
+server {
+  listen 80;
+  server_name <%= $domain %>;
+  rewrite ^ https://<%= $domain %>$uri permanent;
+}
+
+server {
+  listen 80;
+  server_name <%= $domain_www %>;
+  rewrite ^ https://<%= $domain %>$uri permanent;
+}
+
+server {
+  listen 443 ssl;
+  server_name <%= $domain %>;
+  root <%= $web_root %>;
+
+  keepalive_timeout 70;
+  ssl_certificate /etc/letsencrypt/live/<%= $domain %>/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/<%= $domain %>/privkey.pem;
+  add_header Strict-Transport-Security max-age=15768000;
+
+  location / {
+    index index.html index.htm;
+  }
+}

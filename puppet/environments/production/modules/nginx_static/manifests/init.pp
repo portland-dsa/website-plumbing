@@ -1,6 +1,8 @@
 define nginx_static (
   String $serve_dir,
   String $domain,
+  Boolean $ssl = false,
+  Optional[String] $long_domain = undef,
 )
 
 {
@@ -9,9 +11,29 @@ define nginx_static (
   $conf_file =  "/etc/nginx/sites-available/${title}";
   $enable_link = "/etc/nginx/sites-enabled/${title}";
 
+  if $long_domain {
+    $_long_domain = $long_domain
+  } else {
+    $_long_domain = $domain
+  }
+
+  if $ssl {
+    $content = epp('nginx_static/static-site-ssl',
+                  { domain => $domain
+                  , domain_www => $_long_domain
+                  , web_root => $serve_dir
+                  })
+  } else {
+    $content = epp('nginx_static/static-site',
+                  { domain => $domain
+                  , domain_www => $_long_domain
+                  , web_root => $serve_dir
+                  })
+  }
+
   file { $conf_file:
     ensure => file,
-    content => epp('nginx_static/static-site', {server_name => $domain, web_root => $serve_dir}),
+    content => $content,
     owner => 'root',
     group => 'root',
     mode => '0644',
@@ -36,6 +58,5 @@ define nginx_static (
     hasrestart => true,
     subscribe => File[$conf_file],
   }
-
 
 }

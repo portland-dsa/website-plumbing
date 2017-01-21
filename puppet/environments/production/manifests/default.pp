@@ -16,5 +16,7 @@ node default {
   nginx_static { 'dsa-static':
     serve_dir => "/var/www/html/dsa",
     domain => 'portlanddsa.org',
+    long_domain => 'www.portlanddsa.org',
+    ssl => true,
   }
 }
