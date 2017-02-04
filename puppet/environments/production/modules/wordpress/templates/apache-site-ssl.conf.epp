@@ -1,0 +1,30 @@
+<VirtualHost *:443>
+   ServerName <%= $domain %>
+   ServerAlias www.<%= $domain %>
+   ServerAdmin admin@<%= $domain %>
+
+   DocumentRoot /var/www/html/wordpress
+   <Directory /var/www/html/wordpress>
+     AllowOverride All
+   </Directory>
+
+   LogLevel info ssl:warn
+
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+   SSLEngine on
+   SSLCertificateFile /etc/letsencrypt/live/<%= $domain %>/cert.pem
+   SSLCertificateKeyFile /etc/letsencrypt/live/<%= $domain %>/privkey.pem
+   SSLCertificateChainFile /etc/letsencrypt/live/<%= $domain %>/chain.pem
+
+   KeepAlive On
+   KeepAliveTimeout 70
+
+   BrowserMatch "MSIE [7-9]" ssl-unclean-shutdown
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName <%= $domain %>
+  Redirect permanent / https://<%= $domain %>
+</VirtualHost>

@@ -13,10 +13,12 @@ node default {
     shell => '/bin/bash',
   }
 
-  nginx_static { 'dsa-static':
-    serve_dir => "/var/www/html/dsa",
+  wordpress { 'portland_dsa':
+    site_title => 'Portland DSA',
     domain => 'portlanddsa.org',
-    long_domain => 'www.portlanddsa.org',
     ssl => true,
+    root_password => 'sAa75rfHvJIzkg@(/u_4OZ-i98@HSK%d{.u',
+    db_password => '(V:bC0CC37=|U*)dc>7m^YO\g_~Ik5-@!u>',
   }
+
 }
