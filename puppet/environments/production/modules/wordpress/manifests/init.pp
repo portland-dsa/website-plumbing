@@ -12,7 +12,6 @@ define wordpress (
 
   $web_root = '/var/www/html';
   $wp_root = "$web_root/wordpress";
-  $staging_dir = '/var/cache/puppet-staging';
 
   user { 'wp':
     ensure => present,
@@ -21,102 +20,16 @@ define wordpress (
     groups => 'www-data',
   }
 
-  ## This should go in base puppet module?
-
-  file { $staging_dir:
-    ensure => directory,
-    owner => 'root',
-    group => 'root',
-    mode => '0775',
-  }
-
   ## Wordpress Install
   ## =================
 
-  file { "$staging_dir/wp-latest.tar.gz":
-    ensure => file,
-    source => 'puppet:///modules/wordpress/wordpress.tar.gz',
-  }
-
-  exec { 'extract-wordpress':
-    cwd => $web_root,
-    command => "/bin/tar -xzf $staging_dir/wp-latest.tar.gz",
-    refreshonly => true,
-    subscribe => File["$staging_dir/wp-latest.tar.gz"],
-    require => [ Package['tar']
-               , User['wp']
-               ],
-  }
-
-  file { "$wp_root/wp-content":
+  file { $wp_root:
     ensure => directory,
+    recurse => true,
     owner => 'wp',
     group => 'www-data',
-    mode => '0775',
-    require => Exec['extract-wordpress'],
-  }
-
-  file { "$wp_root/wp-content/plugins":
-    ensure => directory,
-    owner => 'wp',
-    group => 'www-data',
-    mode => '0775',
-    require => [ Exec['extract-wordpress']
-               , File["$wp_root/wp-content"]
-               ]
-  }
-
-  file { "$staging_dir/seo-plugin.zip":
-    ensure => file,
-    source => 'puppet:///modules/wordpress/seo-plugin.zip',
-  }
-
-  exec { 'extract-seo-plugin':
-    cwd => "$wp_root/wp-content/plugins/",
-    command => '/usr/bin/yes y | /usr/bin/unzip $staging_dir/seo-plugin.zip',
-    user => 'wp',
-    refreshonly => true,
-    subscribe => File["$staging_dir/seo-plugin.zip"],
-    require => [ Exec['extract-wordpress']
-               , File["$wp_root/wp-content"]
-               , File["$wp_root/wp-content/plugins"]
-               , Package['unzip']
-               ]
-  }
-
-  file { "$staging_dir/sitemap-plugin.zip":
-    ensure => file,
-    source => 'puppet:///modules/wordpress/sitemap-generator.zip',
-  }
-
-  exec { 'extract-sitemap-plugin':
-    cwd => "$wp_root/wp-content/plugins/",
-    command => '/usr/bin/yes y | /usr/bin/unzip $staging_dir/sitemap-plugin.zip',
-    user => 'wp',
-    refreshonly => true,
-    subscribe => File["$staging_dir/sitemap-plugin.zip"],
-    require => [ Exec['extract-wordpress']
-               , File["$wp_root/wp-content"]
-               , File["$wp_root/wp-content/plugins"]
-               , Package['unzip']
-               ]
-  }
-
-  file { "$wp_root/wp-content/plugins/functionality":
-    ensure => directory,
-    owner => 'wp',
-    group => 'www-data',
-    require => [ File["$wp_root/wp-content"] ],
-  }
-
-  file { "$wp_root/wp-content/plugins/functionality/functionality.php":
-    ensure => file,
-    source => 'puppet:///modules/wordpress/functionality.php',
-    owner => 'wp',
-    group => 'www-data',
-    require => [ Exec['extract-wordpress']
-               , File["$wp_root/wp-content/plugins/functionality"]
-               ],
+    mode => '0664',
+    source => 'puppet:///modules/wordpress/wordpress',
   }
 
   $wp_config_params = { db_name => $db_name
@@ -130,34 +43,17 @@ define wordpress (
     content => epp('wordpress/wp-config.php', $wp_config_params),
     owner => 'wp',
     group => 'www-data',
-    require => Exec['extract-wordpress'],
+    require => File[$wp_root],
     notify => Service['apache2'],
   }
 
   file { "$wp_root/.htaccess":
     ensure => file,
-    source => 'puppet:///modules/wordpress/htaccess',
     owner => 'root',
-    group => 'www-data',
+    group => 'root',
     mode => '0644',
-    require => Exec['extract-wordpress'],
+    source => 'puppet:///modules/wordpress/htaccess',
   }
-
-  exec { 'wp-permissions-hack':
-    cwd => '/var/www/html',
-    command => '/bin/chown -R wp:www-data wordpress',
-    require => [ Exec['extract-seo-plugin']
-               , Exec['extract-sitemap-plugin']
-               ]
-  }
-
-  exec { 'wp-permissions-hack-2':
-    cwd => '/var/www/html',
-    command => '/bin/chown -R root:www-data wordpress/.htaccess',
-    require => [ Exec['wp-permissions-hack']
-               ]
-  }
-
 
   ## Apache Config
   ## =============
@@ -176,7 +72,7 @@ define wordpress (
     group => 'root',
     mode => '0644',
     require => [ Package['apache2']
-               , Exec['extract-wordpress']
+               , File[$wp_root]
                ],
     notify => Service['apache2']
   }
@@ -201,7 +97,7 @@ define wordpress (
     subscribe => [ Package['apache2']
                  , Package['libapache2-mod-php']
                  , File["/etc/apache2/sites-enabled/${id}.conf"]
-                 , Exec['extract-wordpress']
+                 , File[$wp_root]
                  ],
   }
 
