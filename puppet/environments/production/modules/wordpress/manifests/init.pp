@@ -48,11 +48,6 @@ define wordpress (
                ],
   }
 
-  file { "$staging_dir/enfold.tar.bz2":
-    ensure => file,
-    source => 'puppet:///modules/wordpress/enfold.tar.bz2',
-  }
-
   file { "$wp_root/wp-content":
     ensure => directory,
     owner => 'wp',
