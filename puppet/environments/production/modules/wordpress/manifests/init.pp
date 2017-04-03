@@ -53,7 +53,7 @@ define wordpress (
     source => 'puppet:///modules/wordpress/enfold.tar.bz2',
   }
 
-  file { "/var/www/html/wordpress/wp-content":
+  file { "$wp_root/wp-content":
     ensure => directory,
     owner => 'wp',
     group => 'www-data',
@@ -61,66 +61,66 @@ define wordpress (
     require => Exec['extract-wordpress'],
   }
 
-  file { "/var/www/html/wordpress/wp-content/plugins":
+  file { "$wp_root/wp-content/plugins":
     ensure => directory,
     owner => 'wp',
     group => 'www-data',
     mode => '0775',
     require => [ Exec['extract-wordpress']
-               , File['/var/www/html/wordpress/wp-content']
+               , File["$wp_root/wp-content"]
                ]
   }
 
-  file { '/var/cache/puppet-staging/seo-plugin.zip':
+  file { "$staging_dir/seo-plugin.zip":
     ensure => file,
     source => 'puppet:///modules/wordpress/seo-plugin.zip',
   }
 
   exec { 'extract-seo-plugin':
-    cwd => '/var/www/html/wordpress/wp-content/plugins/',
-    command => '/usr/bin/yes y | /usr/bin/unzip /var/cache/puppet-staging/seo-plugin.zip',
+    cwd => "$wp_root/wp-content/plugins/",
+    command => '/usr/bin/yes y | /usr/bin/unzip $staging_dir/seo-plugin.zip',
     user => 'wp',
     refreshonly => true,
-    subscribe => File['/var/cache/puppet-staging/seo-plugin.zip'],
+    subscribe => File["$staging_dir/seo-plugin.zip"],
     require => [ Exec['extract-wordpress']
-               , File['/var/www/html/wordpress/wp-content']
-               , File['/var/www/html/wordpress/wp-content/plugins']
+               , File["$wp_root/wp-content"]
+               , File["$wp_root/wp-content/plugins"]
                , Package['unzip']
                ]
   }
 
-  file { '/var/cache/puppet-staging/sitemap-plugin.zip':
+  file { "$staging_dir/sitemap-plugin.zip":
     ensure => file,
     source => 'puppet:///modules/wordpress/sitemap-generator.zip',
   }
 
   exec { 'extract-sitemap-plugin':
-    cwd => '/var/www/html/wordpress/wp-content/plugins/',
-    command => '/usr/bin/yes y | /usr/bin/unzip /var/cache/puppet-staging/sitemap-plugin.zip',
+    cwd => "$wp_root/wp-content/plugins/",
+    command => '/usr/bin/yes y | /usr/bin/unzip $staging_dir/sitemap-plugin.zip',
     user => 'wp',
     refreshonly => true,
-    subscribe => File['/var/cache/puppet-staging/sitemap-plugin.zip'],
+    subscribe => File["$staging_dir/sitemap-plugin.zip"],
     require => [ Exec['extract-wordpress']
-               , File['/var/www/html/wordpress/wp-content']
-               , File['/var/www/html/wordpress/wp-content/plugins']
+               , File["$wp_root/wp-content"]
+               , File["$wp_root/wp-content/plugins"]
                , Package['unzip']
                ]
   }
 
-  file { '/var/www/html/wordpress/wp-content/plugins/functionality':
+  file { "$wp_root/wp-content/plugins/functionality":
     ensure => directory,
     owner => 'wp',
     group => 'www-data',
-    require => [ File['/var/www/html/wordpress/wp-content'] ],
+    require => [ File["$wp_root/wp-content"] ],
   }
 
-  file { '/var/www/html/wordpress/wp-content/plugins/functionality/functionality.php':
+  file { "$wp_root/wp-content/plugins/functionality/functionality.php":
     ensure => file,
     source => 'puppet:///modules/wordpress/functionality.php',
     owner => 'wp',
     group => 'www-data',
     require => [ Exec['extract-wordpress']
-               , File['/var/www/html/wordpress/wp-content/plugins/functionality']
+               , File["$wp_root/wp-content/plugins/functionality"]
                ],
   }
 
@@ -130,7 +130,7 @@ define wordpress (
                       , table_prefix => $id
                       }
 
-  file { '/var/www/html/wordpress/wp-config.php':
+  file { "$wp_root/wp-config.php":
     ensure => file,
     content => epp('wordpress/wp-config.php', $wp_config_params),
     owner => 'wp',
@@ -139,7 +139,7 @@ define wordpress (
     notify => Service['apache2'],
   }
 
-  file { '/var/www/html/wordpress/.htaccess':
+  file { "$wp_root/.htaccess":
     ensure => file,
     source => 'puppet:///modules/wordpress/htaccess',
     owner => 'root',
