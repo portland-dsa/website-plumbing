@@ -2,3 +2,4 @@
 puppet/environments/production/modules/wordpress/files/kraft-lite.zip
 /*.zip
 /enfold*
+puppet/environments/production/modules/wordpress/files/dsa-wp-theme

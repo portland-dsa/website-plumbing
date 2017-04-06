@@ -55,6 +55,15 @@ define wordpress (
     source => 'puppet:///modules/wordpress/htaccess',
   }
 
+  file { "$wp_root/wp-content/themes/portland-dsa":
+    ensure => directory,
+    recurse => true,
+    owner => 'wp',
+    group => 'www-data',
+    mode => '0664',
+    source => 'puppet:///modules/wordpress/dsa-wp-theme',
+  }
+
   ## Apache Config
   ## =============
 
