@@ -24,8 +24,12 @@ For some bizarre reason I couldn't find an Ubuntu 16.04 box with Puppet 4 instal
 5. Hit Ctrl-d (or run `logout`) to log out of the VM.
 6. Run `vagrant provision dev` to run puppet and set everything up (this part will take about five minutes).
 
-Once you've done all that, you'll be able to see your local copy of the DSA site by going to `192.168.42.13` in your web browser.
-You'll probably want to add that address to your hosts file with a more reasonable name.
+Once you've done all that, you'll be able to access your local copy of the DSA site by going to `192.168.42.13` in your web browser (you'll probably want to add that address to your hosts file with a more reasonable name).
+
+The first time you go to the site, you'll need to do the initial Wordpress set up, and after that change the theme to 'Portland DSA'.
+After that's done, you won't need to do it again until after you destroy your Vagrant VM by running `vagrant destroy dev`.
+You can pause the VM with `vagrant suspend dev` and bring it up again with `vagrant resume dev`, and it will have the same state as before.
+If your computer shuts off unexpectedly, you can use the resume command to restore it.
 
 [Vagrant]: https://vagrantup.com
 
