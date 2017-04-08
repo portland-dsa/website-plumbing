@@ -17,8 +17,8 @@ node default {
     site_title => 'Portland DSA',
     domain => 'portlanddsa.org',
     ssl => false,
-    root_password => 'sAa75rfHvJIzkg@(/u_4OZ-i98@HSK%d{.u',
-    db_password => '(V:bC0CC37=|U*)dc>7m^YO\g_~Ik5-@!u>',
+    root_password => 'what-an-idiot-would-have-on-their-luggage',
+    db_password => '12345',
   }
 
 }
