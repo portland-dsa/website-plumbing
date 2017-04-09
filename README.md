@@ -8,13 +8,6 @@ The WordPress site with the content comes from [another repo][wp-repo].
 ## Getting Started
 
 This project uses [Vagrant][vagrant] to define a virtual machine that runs the website locally.
-Before we get started, you should install these vagrant plugins:
-  * vagrant-env
-  * vagrant-digitalocean
-
-You don't need a DigitalOcean account, but I'm not sure exactly what happens given that some of the boxes are statically defined to have that provider.
-
-Now we're ready to bring up the box.
 For some bizarre reason I couldn't find an Ubuntu 16.04 box with Puppet 4 installed that actually worked, so this does require some manual steps:
 
 1. Run `vagrant up dev --no-provision` to bring the VM up.
