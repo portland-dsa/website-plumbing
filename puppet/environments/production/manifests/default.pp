@@ -18,5 +18,6 @@ node default {
     domain => 'portlanddsa.org',
     long_domain => 'www.portlanddsa.org',
     ssl => true,
+    extra_conf => 'rewrite ^/orpop/?$ https://docs.google.com/document/d/1dtYtrYfVE5-dvn8f_BwaMnZZZoRnYYiKC4djgCAPgXo/edit?usp=sharing permanent',
   }
 }

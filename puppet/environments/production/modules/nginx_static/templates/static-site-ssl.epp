@@ -23,4 +23,6 @@ server {
   location / {
     index index.html index.htm;
   }
+
+  <%= $extra_conf %>;
 }

@@ -3,6 +3,7 @@ define nginx_static (
   String $domain,
   Boolean $ssl = false,
   Optional[String] $long_domain = undef,
+  String $extra_conf = "",
 )
 
 {
@@ -22,12 +23,14 @@ define nginx_static (
                   { domain => $domain
                   , domain_www => $_long_domain
                   , web_root => $serve_dir
+                  , extra_conf => $extra_conf
                   })
   } else {
     $content = epp('nginx_static/static-site',
                   { domain => $domain
                   , domain_www => $_long_domain
                   , web_root => $serve_dir
+                  , extra_conf => $extra_conf
                   })
   }
 
