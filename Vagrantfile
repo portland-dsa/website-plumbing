@@ -2,12 +2,14 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  config.env.enable
+
   config.vm.define "production" do |config|
     config.vm.provider :digital_ocean do |provider, override|
       override.ssh.private_key_path = '~/.ssh/id_rsa'
       override.vm.box = 'digital_ocean'
       override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-      provider.token = 'fbac6d52a496363d6362104f43f6689a7aa8efd7705c029466b909478805d386'
+      provider.token = ENV['DIGITALOCEAN_TOKEN']
       provider.image = 'ubuntu-16-04-x64'
       provider.region = 'sfo2'
       provider.size = '512mb'
